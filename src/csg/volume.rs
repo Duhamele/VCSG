@@ -76,6 +76,21 @@ pub struct Tore<T:Float>{
     pub radius_larger:T,
     pub radius_height:T,
 }
+impl<T:Float> Tore<T>{
+
+    pub fn new(center:&Vector<3,T>, axe:&Vector<3,T>,radius_inter:T,radius_larger:T,
+              radius_height:T,) -> Self{
+        let mut axe = axe.clone();
+        axe.normalize();
+        Self{
+          center: *center,axe,radius_inter,radius_larger,radius_height
+        }
+    }
+    pub fn is_empty_center(&self)->bool{
+        self.radius_inter>self.radius_larger
+    }
+
+}
 impl<T:Float> Volume<3,T> for Tore<T>{
     fn is_in(self: &Self, point: &Vector<3, T>) -> bool {
         let d_origin =  *point-self.center;
@@ -101,4 +116,19 @@ pub enum VolumePrimaire<const N:usize,T:Float>{
     Box(Box<N,T>),
     Sphere(Sphere<N, T>),
     Tore(Tore<T>),
+}
+
+
+#[cfg(test)]
+mod tests{
+    use crate::csg::volume::{Tore, Volume};
+use crate::csg::point::Vector;
+
+
+    #[test]
+    fn test_tore_point(){
+       let tore=Tore::new(&Vector::ones(),&Vector::ones(),1.,1.,1.);
+        assert!(tore.is_in(&Vector::ones()));
+
+    }
 }

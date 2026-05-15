@@ -1,7 +1,9 @@
-
+use std::hash::{Hash, Hasher};
+use std::io::Read;
+use std::ptr::hash;
 use num_traits::Float;
 
-#[derive(PartialEq, Clone, Copy, Debug)]
+#[derive( Clone, Copy, Debug)]
 pub struct Vector<const N:usize=3,T=f32> {
     pub data: [T; N],
 
@@ -85,4 +87,71 @@ impl <T> Vector<3,T> where T:Float{
             self.data[0]*rhs.data[1]-self.data[1]*rhs.data[0]])
     }
 }
+
+impl <const N:usize,T>  PartialEq<Self> for Vector<N, T> where T:Float{
+    fn eq(&self, other: &Self) -> bool {
+        for i in 0..N {
+            if self.data[i].is_nan() ^ other.data[i].is_nan(){
+                return false;
+            }
+            if self.data[i].is_zero() ^ other.data[i].is_zero(){
+                return false;
+            }
+            if self.data[i].is_infinite() ^ other.data[i].is_nan() {
+                return false;
+            }
+            if self.data[i].is_infinite(){
+                if self.data[i].is_sign_negative() ^ self.data[i].is_sign_negative() {
+                    return false;
+                }
+                continue;
+            }
+            if self.data[i]!=other.data[i]{
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+
+impl <const N:usize,T> Eq for Vector<N,T> where T:Float {
+
+}
+trait FloatBits {
+    type Bits:Hash;
+
+    fn to_bits(self) -> Self::Bits;
+}
+
+impl FloatBits for f32 {
+    type Bits = u32;
+
+    fn to_bits(self) -> Self::Bits {
+        f32::to_bits(self)
+    }
+}
+
+impl FloatBits for f64 {
+    type Bits = u64;
+
+    fn to_bits(self) -> Self::Bits {
+        f64::to_bits(self)
+    }
+}
+impl <const N:usize,T> Hash for Vector<N,T> where T:Float  + FloatBits{
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        for i in 0..N {
+            if self.data[i].is_nan(){
+                0u8.hash(state);
+            }
+            else if self.data[i].is_zero(){
+                0u64.hash(state);
+            }else {
+                ( self.data[i].to_bits()).hash(state);
+            }
+        }
+    }
+}
+
 
