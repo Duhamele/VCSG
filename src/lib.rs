@@ -1,4 +1,5 @@
 pub mod csg;
+pub mod probalite;
 
 pub fn add(left: u64, right: u64) -> u64 {
     left + right
