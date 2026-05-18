@@ -51,6 +51,33 @@ impl Estimator for EstimatorSingle {
     }
 
     fn variance(&self) -> Option<f64> {
-        todo!()
+        if self.nb_value==0{
+            return None;
+        }
+        let p=(self.nb_possible as f64 / self.nb_value as f64);
+        Some(p*(1.-p))
+    }
+}
+
+
+
+#[cfg(test)]
+mod tests{
+
+
+
+
+    use super::*;
+    #[test]
+    fn is_valid_test() {
+        let mut estimator = EstimatorSingle::new();
+        assert_eq!(estimator.is_valid(), false);
+        estimator.add_eval(false);
+        assert_eq!(estimator.is_valid(), true);
+        estimator.add_positif();
+        assert_eq!(estimator.is_valid(), true);
+        estimator.add_negative();
+        assert_eq!(estimator.is_valid(), true);
+
     }
 }
