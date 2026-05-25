@@ -6,17 +6,17 @@ use rand::distr::StandardUniform;
 use rand::prelude::Distribution;
 
 #[derive( Clone,Debug)]
-pub struct RandomGeneratorPointBox<const N: usize,T:Float> {
-    start:Vector<N,T>,
-    end:Vector<N,T>,
+pub struct RandomGeneratorPointBox<T:Float> {
+    start:Vector<T>,
+    end:Vector<T>,
     core_rand:rand::rngs::ThreadRng,
 
 }
-impl <const N:usize,T:Float> RandomGeneratorPointBox<N,T> where StandardUniform: Distribution<T>  {
+impl <T:Float> RandomGeneratorPointBox<T> where StandardUniform: Distribution<T>  {
 
 
 
-    pub fn new(_box:Box<N,T>) -> Self {
+    pub fn new(_box:Box<T>) -> Self {
 
         Self{start:_box.base,end:_box.base+_box.taille,core_rand: rand::rng()}
 
@@ -24,9 +24,9 @@ impl <const N:usize,T:Float> RandomGeneratorPointBox<N,T> where StandardUniform:
     pub fn set_seed(&mut self, seed:u64) {
         todo!()
     }
-    pub fn draw(&mut self)->Vector<N,T>{
-        let mut output:Vector<N,T>=Vector::zero();
-        for i in 0..N{
+    pub fn draw(&mut self)->Vector<T>{
+        let mut output:Vector<T>=Vector::zero();
+        for i in 0..3{
             output.data[i]=self.core_rand.random::<T>()*(self.end.data[i]-self.start.data[i])+self.start.data[i];
         }
 
@@ -46,7 +46,7 @@ mod tests{
     #[test]
     fn test_random_generator_point() {
         use crate::csg::volume::Box;
-        let volume=Box::new(Vector::<3, f32>::ones(),Vector::ones());
+        let volume=Box::new(Vector::< f32>::ones(),Vector::ones());
         let mut random=RandomGeneratorPointBox::new(volume);
         for _ in 0..100 {
             assert!(volume.is_in(&random.draw()))
@@ -55,7 +55,7 @@ mod tests{
     #[test]
     fn test_random_generator_no_loop(){
         use crate::csg::volume::Box;
-        let volume=Box::new(Vector::<3, f32>::ones(),Vector::ones());
+        let volume=Box::new(Vector::< f32>::ones(),Vector::ones());
         let mut random=RandomGeneratorPointBox::new(volume);
         let mut set_=std::collections::HashSet::new();
         for _ in 0..100000 {
