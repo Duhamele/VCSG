@@ -44,6 +44,11 @@ impl<T:Float> Box<T>{
         Self{base, taille}
     }
 }
+impl <T:Float> PartialEq for Box<T>{
+    fn eq(self: &Self, other: &Self) -> bool {
+        self.base == other.base && self.taille == other.taille
+    }
+}
 
 #[derive(Copy, Clone,Debug)]
 pub struct Sphere<T:Float> {
@@ -111,7 +116,7 @@ impl<T:Float> Volume<T> for Tore<T>{
 }
 
 
-
+#[derive(Copy, Clone,Debug)]
 pub enum VolumePrimaire<T:Float>{
     Box(Box<T>),
     Sphere(Sphere< T>),
