@@ -1,6 +1,4 @@
 use std::hash::{Hash, Hasher};
-use std::io::Read;
-use std::ptr::hash;
 use num_traits::Float;
 
 #[derive( Clone, Copy, Debug)]
@@ -156,7 +154,7 @@ impl <T> Hash for Vector<T> where T:Float  + FloatBits{
 
 #[cfg(test)]
 mod tests {
-
+    use rstest::rstest;
     use super::*;
     #[test]
     fn add_vector() {
@@ -166,6 +164,28 @@ mod tests {
         assert_eq!(c.data[0], 5.0);
         assert_eq!(c.data[1], 7.0);
         assert_eq!(c.data[2], 9.0);
+    }
+
+    #[rstest]
+    #[case([1.0,2.0,3.0],[4.0,5.0,6.0],[5.0,7.0,9.0])]
+    #[case([1.0,2.0,3.0],[4.0,-2.0,6.0],[5.0,0.0,9.0])]
+    #[case([1.0,2.0,3.0],[-1.0,-2.0,-3.0],[0.0,0.0,0.0])]
+    fn add_vector_serie(#[case] a: [f32;3], #[case] b: [f32;3], #[case] c: [f32;3]) {
+        let a = Vector::new(a);
+        let b = Vector::new(b);
+        let c2= a + b;
+        assert_eq!(c2, Vector::new(c));
+    }
+
+    #[rstest]
+    #[case([1.0,2.0,3.0],[4.0,5.0,6.0],[-3.0,-3.0,-3.0])]
+    #[case([1.0,2.0,3.0],[4.0,-2.0,6.0],[-3.0,4.0,-3.0])]
+    #[case([1.0,2.0,3.0],[-1.0,-2.0,-3.0],[2.0,4.0,6.0])]
+    fn sub_vector_serie(#[case] a: [f32;3], #[case] b: [f32;3], #[case] c: [f32;3]) {
+        let a = Vector::new(a);
+        let b = Vector::new(b);
+        let c2= a - b;
+        assert_eq!(c2, Vector::new(c));
     }
 
 }
