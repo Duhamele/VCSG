@@ -154,4 +154,18 @@ impl <T> Hash for Vector<T> where T:Float  + FloatBits{
     }
 }
 
+#[cfg(test)]
+mod tests {
 
+    use super::*;
+    #[test]
+    fn add_vector() {
+        let a = Vector::new([1.0, 2.0, 3.0]);
+        let b = Vector::new([4.0, 5.0, 6.0]);
+        let c = a + b;
+        assert_eq!(c.data[0], 5.0);
+        assert_eq!(c.data[1], 7.0);
+        assert_eq!(c.data[2], 9.0);
+    }
+
+}
