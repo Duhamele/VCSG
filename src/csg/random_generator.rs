@@ -1,15 +1,17 @@
-use num_traits::{zero, Float};
+use num_traits::{ Float};
 use crate::csg::point::{Vector};
 use crate::csg::volume::Box;
-use rand::{Rng, RngExt};
+use rand::{ RngExt};
+use rand::SeedableRng;
+use rand::rngs::StdRng;
 use rand::distr::StandardUniform;
 use rand::prelude::Distribution;
 
-#[derive( Clone,Debug)]
+#[derive( Debug)]
 pub struct RandomGeneratorPointBox<T:Float> {
     start:Vector<T>,
     end:Vector<T>,
-    core_rand:rand::rngs::ThreadRng,
+    core_rand:rand::rngs::StdRng,
 
 }
 impl <T:Float> RandomGeneratorPointBox<T> where StandardUniform: Distribution<T>  {
@@ -18,11 +20,12 @@ impl <T:Float> RandomGeneratorPointBox<T> where StandardUniform: Distribution<T>
 
     pub fn new(_box:Box<T>) -> Self {
 
-        Self{start:_box.base,end:_box.base+_box.taille,core_rand: rand::rng()}
+        Self{start:_box.base,end:_box.base+_box.taille,core_rand: StdRng::seed_from_u64(42)}
 
     }
     pub fn set_seed(&mut self, seed:u64) {
-        todo!()
+        self.core_rand=StdRng::seed_from_u64(seed);
+
     }
     pub fn draw(&mut self)->Vector<T>{
         let mut output:Vector<T>=Vector::zero();
