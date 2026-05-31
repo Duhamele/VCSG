@@ -27,4 +27,11 @@ impl <T:Float> Volume<T> for VolumeCSG<T> {
             VolumeCSG::VolumePrimaire(v) => {v.get_box_contains() }
         }
     }
+
+    fn get_volume(self: &Self) -> Option<T> {
+        match self {
+            VolumeCSG::UnionBinaire(v) => {v.get_volume()},
+            VolumeCSG::VolumePrimaire(v) => {v.get_volume()}
+        }
+    }
 }

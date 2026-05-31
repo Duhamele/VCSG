@@ -1,4 +1,5 @@
-use num_traits::Float;
+
+use num_traits::{Float, FloatConst};
 use crate::csg::point::Vector;
 
 pub trait Volume<T:Float> {
@@ -13,8 +14,9 @@ pub trait Volume<T:Float> {
 
     fn get_box_contains(self: &Self)->Box<T>;
 
-
-
+    ///
+    /// @return Some If the volume can be determined mathematically, otherwise None.
+    fn get_volume(self: &Self) -> Option<T>;
 
 
 
@@ -37,6 +39,10 @@ impl<T:Float> Volume<T> for Box<T>{
 
     fn get_box_contains(self: &Self) -> Box< T> {
         self.clone()
+    }
+
+    fn get_volume(self: &Self) -> Option<T> {
+        Some(self.taille.data[0]*self.taille.data[1]*self.taille.data[2])
     }
 }
 impl<T:Float> Box<T>{
@@ -70,6 +76,10 @@ impl<T:Float> Volume<T> for Sphere<T> {
         taille*= self.radius;
         Box::new(base,taille)
 
+    }
+
+    fn get_volume(self: &Self) -> Option<T> {
+        Some(T::from(4./3.).unwrap()*T::powf(T::from(3.).unwrap(),self.radius)*T::from(f64::PI()).unwrap())
     }
 }
 
@@ -113,6 +123,12 @@ impl<T:Float> Volume<T> for Tore<T>{
         Box::new(base,taille)
 
     }
+
+    fn get_volume(self: &Self) -> Option<T> {
+
+        return None;
+        todo!("get_volume");
+    }
 }
 
 
@@ -136,6 +152,14 @@ impl <T:Float> Volume<T> for VolumePrimaire<T> where {
             VolumePrimaire::Box(volume) => {volume.get_box_contains()}
             VolumePrimaire::Sphere(volume) => {volume.get_box_contains()}
             VolumePrimaire::Tore(volume) => {volume.get_box_contains()}
+        }
+    }
+
+    fn get_volume(self: &Self) -> Option<T> {
+        match self {
+            VolumePrimaire::Box(volume) => {volume.get_volume()},
+            VolumePrimaire::Sphere(volume) => {volume.get_volume()},
+            VolumePrimaire::Tore(volume) => {volume.get_volume()},
         }
     }
 }

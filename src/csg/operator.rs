@@ -26,6 +26,10 @@ pub mod csg {
         fn get_box_contains(self: &Self) -> crate::csg::volume::Box<T> {
             fussion::<T>(self.volumes[0].get_box_contains(),self.volumes[1].get_box_contains())
         }
+
+        fn get_volume(self: &Self) -> Option<T> {
+            None
+        }
     }
 
 }

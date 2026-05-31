@@ -68,4 +68,12 @@ mod tests{
 
         }
     }
+    #[test]
+    fn test_random_seed(){
+        let volume=Box::new(Vector::< f32>::ones(),Vector::ones());
+        let mut random=RandomGeneratorPointBox::new(volume);
+        let mut random2=RandomGeneratorPointBox::new(volume);
+        random.set_seed(54);
+        assert_ne!(random2.draw(), random.draw());
+    }
 }
