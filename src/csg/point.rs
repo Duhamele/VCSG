@@ -1,5 +1,6 @@
 use std::hash::{Hash, Hasher};
 use num_traits::Float;
+use num_traits::real::Real;
 
 #[derive( Clone, Copy, Debug)]
 pub struct Vector<T=f32> {
@@ -24,6 +25,23 @@ impl<T> Vector<T> where T:Float
         for i in 0..3{
             self.data[i]= self.data[i]/length;
         }
+    }
+    pub fn is_zero(&self)->bool{
+        for i in 0..3 {
+            if !self.data[i].is_zero() {
+                return false;
+            }
+        }
+        true
+    }
+    /// @brief return true if all data >= 0.
+    pub fn is_positive(&self)->bool{
+        for i in 0..3 {
+            if self.data[i].is_sign_negative() && !self.data[i].is_zero() {
+                return false;
+            }
+        }
+        true
     }
 }
 impl<T> std::ops::Add for Vector<T> where T:Float  {
