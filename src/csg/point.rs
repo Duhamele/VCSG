@@ -126,7 +126,7 @@ impl <T>  PartialEq<Self> for Vector<T> where T:Float{
                 return false;
             }
         }
-        return true;
+        true
     }
 }
 
@@ -203,6 +203,18 @@ mod tests {
         let a = Vector::new(a);
         let b = Vector::new(b);
         let c2= a - b;
+        assert_eq!(c2, Vector::new(c));
+    }
+    #[rstest]
+    #[case([1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0])]
+    #[case([1.0,0.0,0.0],[0.0,0.0,1.0],[0.0,-1.0,0.0])]
+    #[case([0.0,1.0,0.0],[1.0,0.0,0.0],[0.0,0.0,-1.0])]
+    #[case([0.0,1.0,0.0],[0.0,0.0,1.0],[1.0,0.0,0.0])]
+    #[case([0.0,2.0,0.0],[0.0,0.0,1.0],[2.0,0.0,0.0])]
+    fn test_vector_cross_serie(#[case] a: [f32;3], #[case] b: [f32;3],#[case] c: [f32;3]) {
+        let a = Vector::new(a);
+        let b = Vector::new(b);
+        let c2= a.cross(&b);
         assert_eq!(c2, Vector::new(c));
     }
 
