@@ -125,9 +125,12 @@ impl<T:Float> Volume<T> for Tore<T>{
     }
 
     fn get_volume(self: &Self) -> Option<T> {
+        if (self.radius_inter>=self.radius_larger) {
+            return Some(self.radius_larger*self.radius_height*self.radius_inter*T::from(2.0f64*f64::PI()*f64::PI()).unwrap());
+        }
 
-        return None;
-        todo!("get_volume");
+        Some(T::from(2.0f64*f64::PI()*f64::PI()).unwrap()*self.radius_larger*self.radius_height*self.radius_inter+T::from((4.0/3.0)*f64::PI()).unwrap()*(self.radius_height/self.radius_larger)*(self.radius_larger-self.radius_inter)*(self.radius_larger-self.radius_inter)*(self.radius_larger+T::from(2.).unwrap()*self.radius_inter))
+
     }
 }
 
