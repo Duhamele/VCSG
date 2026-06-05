@@ -49,6 +49,9 @@ impl<T:Float> Box<T>{
     pub fn new(base: Vector< T>, taille: Vector< T>) -> Self {
         Self{base, taille}
     }
+    pub fn cal_volume(self:&Self)->T{
+        self.taille.data[0]*self.taille.data[1]*self.taille.data[2]
+    }
 }
 impl <T:Float> PartialEq for Box<T>{
     fn eq(self: &Self, other: &Self) -> bool {

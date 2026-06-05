@@ -4,7 +4,7 @@
 pub mod csg {
     use num_traits::Float;
     use crate::csg::core_volu::VolumeCSG;
-    use crate::csg::operator::math::fussion;
+    use crate::csg::operator::math::{fussion, inter};
     use crate::csg::point::Vector;
     use crate::csg::volume::Volume;
 
@@ -28,6 +28,14 @@ pub mod csg {
         }
 
         fn get_volume(self: &Self) -> Option<T> {
+            let boxes=inter::<T>(self.volumes[0].get_box_contains(),self.volumes[1].get_box_contains());
+            if boxes.cal_volume().is_zero() {
+                let volu1=self.volumes[1].get_volume();
+                let volu0=self.volumes[0].get_volume();
+                if volu0.is_some()& volu1.is_some() {
+                    return Some(volu0.unwrap()+volu1.unwrap());
+                }
+            }
             None
         }
     }
@@ -47,6 +55,16 @@ pub mod math {
         }
         crate::csg::volume::Box::new(Vector::new(base),Vector::new(sommet))
 
+    }
+
+    pub fn inter<T:Float>(box1:crate::csg::volume::Box<T>, box2:crate::csg::volume::Box<T>)->crate::csg::volume::Box<T>{
+        let mut base:[T;3]=[T::one(),T::one(),T::one()];
+        let mut sommet:[T;3]=[T::one(),T::one(),T::one()];
+        for i in 0..3 {
+            base[i]=T::max(box1.base.data[i],box2.base.data[i]);
+            sommet[i]=T::max(T::min(box1.base.data[i]+box1.taille.data[i],box2.base.data[i]+box2.taille.data[i])-base[i],T::zero());
+        }
+        crate::csg::volume::Box::new(Vector::new(base),Vector::new(sommet))
     }
     #[cfg(test)]
     mod test{
