@@ -1,6 +1,5 @@
 use std::hash::{Hash, Hasher};
 use num_traits::Float;
-use num_traits::real::Real;
 
 #[derive( Clone, Copy, Debug)]
 pub struct Vector<T=f32> {

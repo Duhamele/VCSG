@@ -54,7 +54,7 @@ impl Estimator for EstimatorSingle {
         if self.nb_value==0{
             return None;
         }
-        let p=(self.nb_possible as f64 / self.nb_value as f64);
+        let p=self.nb_possible as f64 / self.nb_value as f64;
         Some(p*(1.-p))
     }
 }
