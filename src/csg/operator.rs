@@ -81,10 +81,24 @@ pub mod math {
             let c=crate::csg::volume::Box::new(Vector::new([0.0, 0.0, 0.0]),Vector::new([2., 1.0, 1.0]));
             let c2=fussion(a,b);
             assert_eq!(c, c2)
+        }
 
-
+        use rstest::rstest;
+        #[rstest]
+        #[case([1.0, 0.0, 0.0],[1., 1.0, 1.0],[0.0, 0.0, 0.0],[1., 1.0, 1.0],[0.0, 0.0, 0.0],[2., 1.0, 1.0])]
+        #[case([0.0, 0.0, 0.0],[1., 1.0, 1.0],[2.0, 2.0, 2.0],[1., 1.0, 1.0],[0.0, 0.0, 0.0],[3., 3.0, 3.0])]
+        #[case([0.0, 1.0, 0.0],[1., 1.0, 1.0],[0.0, 0.0, 0.0],[1., 1.0, 1.0],[0.0, 0.0, 0.0],[1., 2.0, 1.0])]
+        #[case([0.0, 0.0, 1.0],[1., 1.0, 1.0],[0.0, 0.0, 0.0],[1., 1.0, 1.0],[0.0, 0.0, 0.0],[1., 1.0, 2.0])]
+        fn test_fussion_serie(#[case] a_b:[f32;3],#[case] a_t:[f32;3], #[case] b_b: [f32;3],#[case] b_t:[f32;3], #[case] c_b: [f32;3],#[case] c_t:[f32;3]) {
+            let a=crate::csg::volume::Box::new(Vector::new(a_b),Vector::new(a_t));
+            let b=crate::csg::volume::Box::new(Vector::new(b_b),Vector::new(b_t));
+            let c=fussion(a,b);
+            let c2=crate::csg::volume::Box::new(Vector::new(c_b),Vector::new(c_t));
+            assert_eq!(c, c2)
 
         }
+
+        
 
     }
 }
