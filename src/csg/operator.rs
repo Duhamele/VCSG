@@ -39,6 +39,31 @@ pub mod csg {
             None
         }
     }
+    #[derive( Debug)]
+    pub struct InterBinaire<T:Float> {
+        volumes: [Box<VolumeCSG<T> >;2]
+    }
+    impl<T:Float>  InterBinaire<T>  {
+        pub fn new(volume1:Box<VolumeCSG<T> >,volumes2:Box<VolumeCSG<T> >) ->InterBinaire<T>{
+            InterBinaire{volumes:[volume1,volumes2]}
+        }
+    }
+    impl <T:Float> Volume<T> for InterBinaire<T>  {
+        fn is_in(self: &Self, point: &Vector<T>) -> bool {
+            self.volumes[0].is_in(point) & self.volumes[1].is_in(point)
+        }
+
+        fn get_box_contains(self: &Self) -> crate::csg::volume::Box<T> {
+            inter(self.volumes[1].get_box_contains(),self.volumes[0].get_box_contains())
+        }
+
+        fn get_volume(self: &Self) -> Option<T> {
+            if self.get_box_contains().cal_volume().is_zero() {
+                return Some(T::zero());
+            }
+            None
+        }
+    }
 
 }
 
