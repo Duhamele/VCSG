@@ -39,3 +39,21 @@ impl <T:Float> Volume<T> for VolumeCSG<T> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::csg::core_volu::{Volume, VolumeCSG};
+    use crate::csg::core_volu::UnionBinaire;
+    use crate::csg::point::Vector;
+    use crate::csg::volume::{Sphere, VolumePrimaire};
+    use crate::csg::volume::Box;
+
+    #[test]
+    fn test_csg_core_volu_union() {
+        let sphere=Sphere::new(Vector::new([0.,0.,0.]),2.);
+        let boite=Box::new(Vector::new([7.,0.,0.]),Vector::new([2.,1.,3.]));
+        let volume=UnionBinaire::new(std::boxed::Box::new(VolumeCSG::VolumePrimaire(VolumePrimaire::Sphere(sphere))),std::boxed::Box::new(VolumeCSG::VolumePrimaire(VolumePrimaire::Box(boite))));
+        let result=volume.get_volume().unwrap();
+        assert!(f64::abs(result-39.5) < 0.1)
+    }
+}
