@@ -82,10 +82,19 @@ impl<T:Float> Volume<T> for Sphere<T> {
     }
 
     fn get_volume(self: &Self) -> Option<T> {
-        Some(T::from(4./3.).unwrap()*T::powf(T::from(3.).unwrap(),self.radius)*T::from(f64::PI()).unwrap())
+        Some(T::from(4./3.).unwrap()*T::powi(self.radius,3)*T::from(f64::PI()).unwrap())
     }
 }
+impl <T:Float> Sphere<T> {
+    pub fn new(center: Vector<T>, radius:T) -> Self {
+        Self{center, radius}
+    }
+    pub fn cal_volume(self: &Self)->T{
+        T::powi(self.radius,3)*T::from(f64::PI()*4.0f64/3.0f64).unwrap()
+    }
+    
 
+}
 #[derive(Copy, Clone,Debug)]
 pub struct Tore<T:Float>{
     pub center: Vector<T>,
