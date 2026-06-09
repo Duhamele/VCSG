@@ -15,31 +15,20 @@ pub struct RandomGeneratorPointBox<T:Float> {
 
 }
 impl <T:Float> RandomGeneratorPointBox<T> where StandardUniform: Distribution<T>  {
-
-
-
     pub fn new(_box:Box<T>) -> Self {
-
         Self{start:_box.base,end:_box.base+_box.taille,core_rand: StdRng::seed_from_u64(42)}
-
     }
     pub fn set_seed(&mut self, seed:u64) {
         self.core_rand=StdRng::seed_from_u64(seed);
-
     }
     pub fn draw(&mut self)->Vector<T>{
         let mut output:Vector<T>=Vector::zero();
         for i in 0..3{
             output.data[i]=self.core_rand.random::<T>()*(self.end.data[i]-self.start.data[i])+self.start.data[i];
         }
-
-
-
-
         output
     }
 }
-
 
 #[cfg(test)]
 mod tests{
