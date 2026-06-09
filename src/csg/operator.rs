@@ -64,6 +64,34 @@ pub mod csg {
             None
         }
     }
+    #[derive( Debug)]
+    pub struct Moins<T:Float> {
+        volumes_base:Box<VolumeCSG<T> >,
+        volume_moins:Box<VolumeCSG<T> >
+    }
+    impl<T:Float>  Moins<T>  {
+        pub fn new(volumes_base:Box<VolumeCSG<T> >,
+                   volume_moins:Box<VolumeCSG<T> >)-> Moins<T>  {
+            Self{volumes_base,volume_moins}
+        }
+
+    }
+    impl <T:Float> Volume<T> for Moins<T>  {
+        fn is_in(self: &Self, point: &Vector<T>) -> bool {
+            self.volumes_base.is_in(point) & !self.volume_moins.is_in(point)
+        }
+
+        fn get_box_contains(self: &Self) -> crate::csg::volume::Box<T> {
+            self.volumes_base.get_box_contains()
+        }
+
+        fn get_volume(self: &Self) -> Option<T> {
+            if inter(self.volumes_base.get_box_contains(),self.volume_moins.get_box_contains()).cal_volume().is_zero() {
+                return self.volumes_base.get_volume();
+            }
+            None
+        }
+    }
 
 }
 
