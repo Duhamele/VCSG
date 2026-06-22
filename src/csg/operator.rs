@@ -3,10 +3,13 @@
 
 pub mod csg {
     use num_traits::Float;
+    use rand::distr::{Distribution, StandardUniform};
     use crate::csg::core_volu::VolumeCSG;
     use crate::csg::operator::math::{fussion, inter};
     use crate::csg::point::Vector;
+    use crate::csg::random_generator::RandomGeneratorPointBox;
     use crate::csg::volume::Volume;
+    use crate::probalite::distribution::distribution;
 
     #[derive( Debug)]
     pub struct UnionBinaire<T:Float> {
@@ -38,6 +41,32 @@ pub mod csg {
             }
             None
         }
+
+        fn get_estimated_volume_single(self: &Self, number_draw: u64, random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T>{
+            let box1=self.volumes[0].get_box_contains();
+            let box2=self.volumes[1].get_box_contains();
+            if inter(box1,box2).is_null() {
+                if box1.is_null() {
+                    return self.volumes[1].get_estimated_volume_single(number_draw, random_generator_point_box);
+                }else if box2.is_null() {
+                    return self.volumes[0].get_estimated_volume_single(number_draw, random_generator_point_box);
+                }else {
+                    let fact1=box1.cal_volume();
+                    let fact2=box2.cal_volume();
+                    let factI=distribution(fact1,fact2,number_draw);
+                    return self.volumes[0].get_estimated_volume_single(factI[0],random_generator_point_box)+self.volumes[1].get_estimated_volume_single(factI[1],random_generator_point_box);
+                }
+            }else {
+                let mut sum=0;
+                random_generator_point_box.set(fussion(box1,box2));
+                for _ in 0..number_draw {
+                    if self.is_in(&random_generator_point_box.draw()) {
+                        sum+=1;
+                    }
+                }
+                return fussion(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap());
+            }
+        }
     }
     #[derive( Debug)]
     pub struct InterBinaire<T:Float> {
@@ -62,6 +91,27 @@ pub mod csg {
                 return Some(T::zero());
             }
             None
+        }
+
+        fn get_estimated_volume_single(self: &Self, number_draw: u64, random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T
+        where
+            StandardUniform: Distribution<T>
+        {
+            let box1=self.volumes[0].get_box_contains();
+            let box2=self.volumes[1].get_box_contains();
+            if inter(box1,box2).is_null() {
+                return T::zero();
+            }else {
+                random_generator_point_box.set(inter(box1,box2));
+                let mut sum=0;
+                for _ in 0..number_draw {
+                    if self.is_in(&random_generator_point_box.draw()) {
+                        sum+=1;
+                    }
+                }
+                return inter(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap());
+
+            }
         }
     }
     #[derive( Debug)]
@@ -90,6 +140,27 @@ pub mod csg {
                 return self.volumes_base.get_volume();
             }
             None
+        }
+
+        fn get_estimated_volume_single(self: &Self, number_draw: u64, random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T
+        where
+            StandardUniform: Distribution<T>
+        {
+            let box1=self.volumes_base.get_box_contains();
+            let box2=self.volume_moins.get_box_contains();
+            if inter(box1,box2).is_null() {
+                return self.volumes_base.get_estimated_volume_single(number_draw, random_generator_point_box);
+            }else {
+                random_generator_point_box.set(fussion(box1,box2));
+                let mut sum=0;
+                for _ in 0..number_draw {
+                    if self.is_in(&random_generator_point_box.draw()) {
+                        sum+=1;
+                    }
+                }
+                return fussion(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap());
+
+            }
         }
     }
 

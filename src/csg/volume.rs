@@ -1,6 +1,8 @@
 
 use num_traits::{Float, FloatConst};
+use rand::distr::{Distribution, StandardUniform};
 use crate::csg::point::Vector;
+use crate::csg::random_generator::RandomGeneratorPointBox;
 
 pub trait Volume<T:Float> {
 
@@ -17,6 +19,11 @@ pub trait Volume<T:Float> {
     ///
     /// @return Some If the volume can be determined mathematically, otherwise None.
     fn get_volume(self: &Self) -> Option<T>;
+
+
+
+    ///
+    fn get_estimated_volume_single(self: &Self,number_draw:u64, random_generator_point_box:&mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T>;
 
 
 
@@ -44,6 +51,10 @@ impl<T:Float> Volume<T> for Box<T>{
     fn get_volume(self: &Self) -> Option<T> {
         Some(self.taille.data[0]*self.taille.data[1]*self.taille.data[2])
     }
+
+    fn get_estimated_volume_single(self: &Self, number_draw: u64, random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T>{
+        self.taille.data[0]*self.taille.data[1]*self.taille.data[2]
+    }
 }
 impl<T:Float> Box<T>{
     pub fn new(base: Vector< T>, taille: Vector< T>) -> Self {
@@ -51,6 +62,9 @@ impl<T:Float> Box<T>{
     }
     pub fn cal_volume(self:&Self)->T{
         self.taille.data[0]*self.taille.data[1]*self.taille.data[2]
+    }
+    pub fn is_null(self: &Self) -> bool{
+        self.taille.data[0].is_zero() || self.taille.data[1].is_zero() || self.taille.data[2].is_zero()
     }
 }
 impl <T:Float> PartialEq for Box<T>{
@@ -83,6 +97,10 @@ impl<T:Float> Volume<T> for Sphere<T> {
 
     fn get_volume(self: &Self) -> Option<T> {
         Some(T::from(4./3.).unwrap()*T::powi(self.radius,3)*T::from(f64::PI()).unwrap())
+    }
+
+    fn get_estimated_volume_single(self: &Self, number_draw: u64, random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T> {
+        self.cal_volume()
     }
 }
 impl <T:Float> Sphere<T> {
@@ -144,6 +162,10 @@ impl<T:Float> Volume<T> for Tore<T>{
         Some(T::from(2.0f64*f64::PI()*f64::PI()).unwrap()*self.radius_larger*self.radius_height*self.radius_inter+T::from((4.0/3.0)*f64::PI()).unwrap()*(self.radius_height/self.radius_larger)*(self.radius_larger-self.radius_inter)*(self.radius_larger-self.radius_inter)*(self.radius_larger+T::from(2.).unwrap()*self.radius_inter))
 
     }
+
+    fn get_estimated_volume_single(self: &Self, number_draw: u64, random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T>{
+        self.get_volume().unwrap()
+    }
 }
 
 
@@ -175,6 +197,14 @@ impl <T:Float> Volume<T> for VolumePrimaire<T> where {
             VolumePrimaire::Box(volume) => {volume.get_volume()},
             VolumePrimaire::Sphere(volume) => {volume.get_volume()},
             VolumePrimaire::Tore(volume) => {volume.get_volume()},
+        }
+    }
+
+    fn get_estimated_volume_single(self: &Self, number_draw: u64, random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T> {
+        match self {
+            VolumePrimaire::Box(volume) => {volume.get_estimated_volume_single(number_draw, random_generator_point_box)},
+            VolumePrimaire::Sphere(volume) => {volume.get_estimated_volume_single(number_draw, random_generator_point_box)},
+            VolumePrimaire::Tore(volume) => {volume.get_estimated_volume_single(number_draw, random_generator_point_box)},
         }
     }
 }

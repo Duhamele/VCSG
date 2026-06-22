@@ -8,7 +8,7 @@ use rand::distr::StandardUniform;
 use rand::prelude::Distribution;
 
 #[derive( Debug)]
-pub struct RandomGeneratorPointBox<T:Float> {
+pub struct RandomGeneratorPointBox<T:Float> where StandardUniform: Distribution<T>{
     start:Vector<T>,
     end:Vector<T>,
     core_rand:rand::rngs::StdRng,
@@ -17,6 +17,10 @@ pub struct RandomGeneratorPointBox<T:Float> {
 impl <T:Float> RandomGeneratorPointBox<T> where StandardUniform: Distribution<T>  {
     pub fn new(_box:Box<T>) -> Self {
         Self{start:_box.base,end:_box.base+_box.taille,core_rand: StdRng::seed_from_u64(42)}
+    }
+    pub fn set(&mut self, _box:Box<T>) {
+        self.start=_box.base;
+        self.end=_box.base+_box.taille;
     }
     pub fn set_seed(&mut self, seed:u64) {
         self.core_rand=StdRng::seed_from_u64(seed);

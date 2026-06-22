@@ -1,6 +1,8 @@
 use num_traits::Float;
+use rand::distr::{Distribution, StandardUniform};
 use crate::csg::operator::csg::{InterBinaire, Moins, UnionBinaire};
 use crate::csg::point::Vector;
+use crate::csg::random_generator::RandomGeneratorPointBox;
 use crate::csg::volume::{Volume, VolumePrimaire};
 
 #[derive( Debug)]
@@ -42,6 +44,15 @@ impl <T:Float> Volume<T> for VolumeCSG<T> {
             VolumeCSG::VolumePrimaire(v) => {v.get_volume()}
             VolumeCSG::InterBinaire(v) => {v.get_volume()}
             VolumeCSG::Moins(v) => {v.get_volume()}
+        }
+    }
+
+    fn get_estimated_volume_single(self: &Self, number_draw: u64, random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T  where StandardUniform: Distribution<T>{
+        match self {
+            VolumeCSG::UnionBinaire(v) => {v.get_estimated_volume_single(number_draw, random_generator_point_box)},
+            VolumeCSG::VolumePrimaire(v) => {v.get_estimated_volume_single(number_draw, random_generator_point_box)},
+            VolumeCSG::InterBinaire(v) => {v.get_estimated_volume_single(number_draw, random_generator_point_box)},
+            VolumeCSG::Moins(v) => {v.get_estimated_volume_single(number_draw, random_generator_point_box)},
         }
     }
 }
