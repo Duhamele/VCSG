@@ -90,7 +90,7 @@ impl<T:Float> Volume<T> for Sphere<T> {
             base.data[i] = base.data[i]-self.radius;
         }
         let mut taille=Vector::ones();
-        taille*= self.radius;
+        taille*= self.radius*T::from(2).unwrap();
         Box::new(base,taille)
 
     }
