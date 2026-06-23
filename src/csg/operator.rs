@@ -47,7 +47,7 @@ pub mod csg {
             let box2=self.volumes[1].get_box_contains();
             if inter(box1,box2).is_null() {
                 if box1.is_null() {
-                    return self.volumes[1].get_estimated_volume_single(number_draw, random_generator_point_box);
+                     self.volumes[1].get_estimated_volume_single(number_draw, random_generator_point_box)
                 }else if box2.is_null() {
                     return self.volumes[0].get_estimated_volume_single(number_draw, random_generator_point_box);
                 }else {
@@ -64,7 +64,7 @@ pub mod csg {
                         sum+=1;
                     }
                 }
-                return fussion(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap());
+                fussion(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap())
             }
         }
     }
@@ -100,7 +100,7 @@ pub mod csg {
             let box1=self.volumes[0].get_box_contains();
             let box2=self.volumes[1].get_box_contains();
             if inter(box1,box2).is_null() {
-                return T::zero();
+                T::zero()
             }else {
                 random_generator_point_box.set(inter(box1,box2));
                 let mut sum=0;
@@ -109,7 +109,7 @@ pub mod csg {
                         sum+=1;
                     }
                 }
-                return inter(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap());
+               inter(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap())
 
             }
         }
@@ -149,7 +149,7 @@ pub mod csg {
             let box1=self.volumes_base.get_box_contains();
             let box2=self.volume_moins.get_box_contains();
             if inter(box1,box2).is_null() {
-                return self.volumes_base.get_estimated_volume_single(number_draw, random_generator_point_box);
+               self.volumes_base.get_estimated_volume_single(number_draw, random_generator_point_box)
             }else {
                 random_generator_point_box.set(fussion(box1,box2));
                 let mut sum=0;
@@ -158,7 +158,7 @@ pub mod csg {
                         sum+=1;
                     }
                 }
-                return fussion(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap());
+                fussion(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap())
 
             }
         }

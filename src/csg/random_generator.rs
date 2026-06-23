@@ -11,7 +11,7 @@ use rand::prelude::Distribution;
 pub struct RandomGeneratorPointBox<T:Float> where StandardUniform: Distribution<T>{
     start:Vector<T>,
     end:Vector<T>,
-    core_rand:rand::rngs::StdRng,
+    core_rand:StdRng,
 
 }
 impl <T:Float> RandomGeneratorPointBox<T> where StandardUniform: Distribution<T>  {

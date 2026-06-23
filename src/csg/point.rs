@@ -163,7 +163,7 @@ impl <T> Hash for Vector<T> where T:Float  + FloatBits{
             else if self.data[i].is_zero(){
                 0u64.hash(state);
             }else {
-                ( self.data[i].to_bits()).hash(state);
+                self.data[i].to_bits().hash(state);
             }
         }
     }
