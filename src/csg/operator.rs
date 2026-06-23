@@ -53,8 +53,8 @@ pub mod csg {
                 }else {
                     let fact1=box1.cal_volume();
                     let fact2=box2.cal_volume();
-                    let factI=distribution(fact1,fact2,number_draw);
-                    return self.volumes[0].get_estimated_volume_single(factI[0],random_generator_point_box)+self.volumes[1].get_estimated_volume_single(factI[1],random_generator_point_box);
+                    let fact_i =distribution(fact1, fact2, number_draw);
+                    return self.volumes[0].get_estimated_volume_single(fact_i[0], random_generator_point_box)+self.volumes[1].get_estimated_volume_single(fact_i[1], random_generator_point_box);
                 }
             }else {
                 let mut sum=0;
