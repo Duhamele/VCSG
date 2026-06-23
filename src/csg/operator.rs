@@ -79,7 +79,7 @@ pub mod csg {
     }
     impl <T:Float> Volume<T> for InterBinaire<T>  {
         fn is_in(self: &Self, point: &Vector<T>) -> bool {
-            self.volumes[0].is_in(point) & self.volumes[1].is_in(point)
+            self.volumes[0].is_in(point) && self.volumes[1].is_in(point)
         }
 
         fn get_box_contains(self: &Self) -> crate::csg::volume::Box<T> {
@@ -128,7 +128,7 @@ pub mod csg {
     }
     impl <T:Float> Volume<T> for Moins<T>  {
         fn is_in(self: &Self, point: &Vector<T>) -> bool {
-            self.volumes_base.is_in(point) & !self.volume_moins.is_in(point)
+            self.volumes_base.is_in(point) && !self.volume_moins.is_in(point)
         }
 
         fn get_box_contains(self: &Self) -> crate::csg::volume::Box<T> {
