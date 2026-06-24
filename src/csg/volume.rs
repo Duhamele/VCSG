@@ -214,9 +214,11 @@ impl <T:Float> Volume<T> for VolumePrimaire<T> where {
 
 #[cfg(test)]
 mod tests{
-    use crate::csg::volume::{Tore, Volume};
-use crate::csg::point::Vector;
-
+    use num_traits::{abs, pow};
+    use crate::csg::volume::{Tore, Volume, Sphere,Box};
+ use crate::csg::point::Vector;
+    use rstest::rstest;
+    use crate::csg::random_generator::RandomGeneratorPointBox;
 
     #[test]
     fn test_tore_point(){
@@ -224,4 +226,32 @@ use crate::csg::point::Vector;
         assert!(tore.is_in(&Vector::ones()));
 
     }
+
+
+
+    #[test]
+    fn test_sphere_box(){
+        let shpere=Sphere::new(Vector::ones(),1.);
+        let boxe=shpere.get_box_contains();
+        assert!(abs(boxe.cal_volume()-8.)<0.001)
+
+    }
+    #[rstest]
+    #[case(2.)]
+    #[case(4.6)]
+    #[case(8.)]
+    #[case(562.4)]
+    #[case(0.9)]
+    #[case(0.01)]
+    #[case(3.5)]
+    fn test_sphere_box_vol_serie(#[case] raduis:f32){
+        let mut generateur=RandomGeneratorPointBox::new(Box::new(Vector::new([-32.,-32.,-32.]),Vector::new([64.,64.,64.])));
+
+        for _ in 0..100 {
+            let shpere = Sphere::new(generateur.draw(), raduis);
+            let boxe=shpere.get_box_contains();
+            assert!(abs(boxe.cal_volume()-pow(raduis*2.,3))<0.001)
+        }
+    }
+
 }
