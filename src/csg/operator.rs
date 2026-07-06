@@ -67,6 +67,10 @@ pub mod csg {
                 fussion(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap())
             }
         }
+
+        fn get_volumes_full(self: &Self) -> Vec<crate::csg::volume::Box<T>> {
+            todo!()
+        }
     }
     #[derive( Debug)]
     pub struct InterBinaire<T:Float> {
@@ -112,6 +116,10 @@ pub mod csg {
                inter(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap())
 
             }
+        }
+
+        fn get_volumes_full(self: &Self) -> Vec<crate::csg::volume::Box<T>> {
+            todo!()
         }
     }
     #[derive( Debug)]
@@ -161,6 +169,10 @@ pub mod csg {
                 fussion(box1,box2).cal_volume()*(T::from(sum).unwrap()/T::from(number_draw).unwrap())
 
             }
+        }
+
+        fn get_volumes_full(self: &Self) -> Vec<crate::csg::volume::Box<T>> {
+            todo!()
         }
     }
 

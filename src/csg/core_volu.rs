@@ -55,6 +55,10 @@ impl <T:Float> Volume<T> for VolumeCSG<T> {
             VolumeCSG::Moins(v) => {v.get_estimated_volume_single(number_draw, random_generator_point_box)},
         }
     }
+
+    fn get_volumes_full(self: &Self) -> Vec<crate::csg::volume::Box<T>> {
+        todo!()
+    }
 }
 
 #[cfg(test)]

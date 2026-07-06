@@ -26,6 +26,9 @@ pub trait Volume<T:Float> {
     fn get_estimated_volume_single(self: &Self,number_draw:u64, random_generator_point_box:&mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T>;
 
 
+    fn get_volumes_full(self: &Self)->Vec<Box<T>>;
+
+
 
 }
 
@@ -55,6 +58,12 @@ impl<T:Float> Volume<T> for Box<T>{
 
     fn get_estimated_volume_single(self: &Self, _number_draw: u64, _random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T>{
         self.taille.data[0]*self.taille.data[1]*self.taille.data[2]
+    }
+
+    fn get_volumes_full(self: &Self) -> Vec<Box<T>> {
+        let mut  a=Vec::new();
+        a.push(self.clone());
+        a
     }
 }
 impl<T:Float> Box<T>{
@@ -102,6 +111,10 @@ impl<T:Float> Volume<T> for Sphere<T> {
 
     fn get_estimated_volume_single(self: &Self, _number_draw: u64, _random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T> {
         self.cal_volume()
+    }
+
+    fn get_volumes_full(self: &Self) -> Vec<Box<T>> {
+        todo!()
     }
 }
 impl <T:Float> Sphere<T> {
@@ -167,6 +180,10 @@ impl<T:Float> Volume<T> for Tore<T>{
     fn get_estimated_volume_single(self: &Self, _number_draw: u64, _random_generator_point_box: &mut RandomGeneratorPointBox<T>) -> T where StandardUniform: Distribution<T>{
         self.get_volume().unwrap()
     }
+
+    fn get_volumes_full(self: &Self) -> Vec<Box<T>> {
+        todo!()
+    }
 }
 
 
@@ -206,6 +223,14 @@ impl <T:Float> Volume<T> for VolumePrimaire<T> where {
             VolumePrimaire::Box(volume) => {volume.get_estimated_volume_single(number_draw, random_generator_point_box)},
             VolumePrimaire::Sphere(volume) => {volume.get_estimated_volume_single(number_draw, random_generator_point_box)},
             VolumePrimaire::Tore(volume) => {volume.get_estimated_volume_single(number_draw, random_generator_point_box)},
+        }
+    }
+
+    fn get_volumes_full(self: &Self) -> Vec<Box<T>> {
+        match self {
+            VolumePrimaire::Box(v) => {v.get_volumes_full()},
+            VolumePrimaire::Sphere(v) => {v.get_volumes_full()},
+            VolumePrimaire::Tore(v) => {v.get_volumes_full()},
         }
     }
 }
